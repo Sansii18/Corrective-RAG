@@ -1,0 +1,49 @@
+Corrective RAG (CRAG) — Self-Validating Retrieval System
+
+Small Overview
+Corrective RAG (CRAG) is an advanced version of traditional RAG (Retrieval-Augmented Generation).
+In normal RAG, the AI retrieves information from a vector database and directly generates an answer. The problem is: if the retrieved information is irrelevant, incomplete, or outdated, the AI still tries to answer confidently.
+CRAG solves this by adding a retrieval evaluator — a component that checks whether the retrieved context is actually useful before generating the final response.
+If the retrieved data has:
+High relevance → generate answer normally
+Low relevance → perform fallback web search
+Still low confidence → refuse to answer safely
+This creates a self-correcting AI pipeline, making the system much more reliable for real-world production applications like healthcare, finance, legal tech, or enterprise knowledge assistants.
+
+
+
+Main Components of the project: 
+1. Retriever (Qdrant)
+Stores embeddings of documents like:
+medical PDFs, clinical notes, company docs, FAQs
+* When user asks a question:
+“What causes chest pain after exercise?”
+Qdrant retrieves the most relevant chunks.
+
+
+2. Retrieval Evaluator (Core of CRAG)
+This is the important part.
+An LLM or scoring model checks:
+Is retrieved context relevant?
+Does it fully answer the query?
+Is confidence high enough?
+
+
+3. Web Search Fallback (Tavily API)
+If confidence is low:
+search trusted medical websites, fetch updated information, use it as additional context
+This prevents hallucinations from weak retrieval.
+
+
+4. Conditional Workflow (LangGraph)
+LangGraph is perfect because CRAG requires branching logic.
+LangGraph allows:
+retries, conditional nodes, looping, fallback handling, agentic workflows.
+
+
+5. Final Generator
+The LLM generates:
+final answer, confidence-aware response, refusal if uncertain
+Example:
+“I couldn't find sufficiently reliable medical information to answer safely.”
+This is extremely important in production systems.
